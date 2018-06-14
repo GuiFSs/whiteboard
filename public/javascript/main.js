@@ -111,7 +111,7 @@ const btnLogin = document.getElementById('btnLogin'),
 
 btnLogin.addEventListener('click', login);
 btnSendMsg.addEventListener('click', sendMessage);
-messageArea.addEventListener('keypress', sendMessageEnter);
+messageArea.addEventListener('keypress', keyPress);
 
 // jokes
 let copied = false;
@@ -138,12 +138,23 @@ function login(e) {
     e.preventDefault();
 }
 
-function sendMessageEnter(e) {
-
+function keyPress(e) {
     if (e.keyCode === 13){
         sendMessage(e);
+        return;
     }
+    socket.emit('typing', username.value)
 }
+
+socket.on('typing', data => {
+    let li = document.querySelector('.typing');
+    li.style.display = 'inline';
+    li.innerHTML = `${data} is typing`;
+});
+
+socket.on('typing stoped',() =>{
+    document.querySelector('.typing').style.display = 'none';
+})
 
 function sendMessage(e) {
     if (messageArea.value.toLowerCase() === 'master'){
@@ -158,6 +169,7 @@ function sendMessage(e) {
         alert('troxa! EU DISSE Q TU FOI HACKEADO');
         location.reload(true);
     }
+    
     socket.emit('send message', messageArea.value);
     messageArea.value = '';
     e.preventDefault();

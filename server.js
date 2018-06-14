@@ -33,8 +33,14 @@ io.sockets.on('connection', (socket) => {
         updateAllConnections();       
     });
 
+    socket.on('typing', data => {
+        socket.broadcast.emit('typing', data);
+    });
+
+
     socket.on('send message', data => {
         io.sockets.emit('send message', {message: data, username: socket.username});
+        socket.broadcast.emit('typing stoped');
     });
 
 
