@@ -12,6 +12,39 @@ canvas.addEventListener('mousemove', onMouseMove);
 canvas.addEventListener('mouseout', onMouseUp);
 canvas.addEventListener('mouseup', onMouseUp);
 
+
+canvas.addEventListener('touchstart', (e) => {
+    let touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+
+    drawing = true;
+    current.x = touch.clientX;
+    current.y = touch.clientY;
+
+    canvas.dispatchEvent(mouseEvent);
+
+    drawLine(current.x, current.y, touch.clientX, touch.clientY, current.color, true);
+    current.x = touch.clientX;
+    current.y = touch.clientY;
+});
+// canvas.addEventListener('touchend', (e) => {
+//     const mouseEvent = new MouseEvent("mouseup", {});
+//     canvas.dispatchEvent(mouseEvent);
+// });
+canvas.addEventListener('touchmove', (e) => {
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    canvas.dispatchEvent(mouseEvent);
+});
+
+
+
 socket.on('drawing', onDrawingEvent);
 
 
@@ -63,12 +96,6 @@ function onMouseDown(e) {
     current.x = e.clientX;
     current.y = e.clientY;
 }
-
-
-
-
-
-
 
 const btnLogin = document.getElementById('btnLogin'),
       username = document.getElementById('username'),
@@ -133,4 +160,19 @@ socket.on('disconnected', username => {
     chat.appendChild(li);
 });
 
-console.log('SE VOCÊ ESTÁ LENDO ISSO, É PORQUE FOI HACKEADO');
+// Prevent scrolling when touching the canvas
+document.body.addEventListener("touchstart", function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+  }, false);
+  document.body.addEventListener("touchend", function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+  }, false);
+  document.body.addEventListener("touchmove", function (e) {
+    if (e.target == canvas) {
+      e.preventDefault();
+    }
+  }, false);
