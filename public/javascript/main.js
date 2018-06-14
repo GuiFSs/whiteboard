@@ -157,21 +157,28 @@ socket.on('typing stoped',() =>{
 })
 
 function sendMessage(e) {
-    if (messageArea.value.toLowerCase() === 'master'){
+    let message = messageArea.value;
+    messageArea.value = '';
+    if (message.toLowerCase() === ':master:'){
         document.body.style.backgroundColor = 'black';
         document.body.style.color = 'white';
-        canvas.style.borderColor = 'white'
+        canvas.style.borderColor = 'white';
+        return;
     }
-    if (copied && messageArea.value === 'SE VOCÊ ESTÁ LENDO ISSO, É PORQUE FOI HACKEADO'){
+    if (copied && message === 'SE VOCÊ ESTÁ LENDO ISSO, É PORQUE FOI HACKEADO'){
         for (let i = 0; i < 10; i++) {
             alert('HAHAHHAHAHAHA, TROXA! ;)');
         }
         alert('troxa! EU DISSE Q TU FOI HACKEADO');
         location.reload(true);
     }
+
+    if(message.toLowerCase() === ':clear:'){
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        return
+    }
     
-    socket.emit('send message', messageArea.value);
-    messageArea.value = '';
+    socket.emit('send message', message);
     e.preventDefault();
 }
 
