@@ -97,6 +97,7 @@ function onMouseDown(e) {
     current.y = e.clientY;
 }
 
+// chat 
 const btnLogin = document.getElementById('btnLogin'),
       username = document.getElementById('username'),
       mainDiv = document.getElementById('mainDiv'),
@@ -112,7 +113,22 @@ btnLogin.addEventListener('click', login);
 btnSendMsg.addEventListener('click', sendMessage);
 messageArea.addEventListener('keypress', sendMessageEnter);
 
+// jokes
+let copied = false;
+joke.addEventListener('copy', (e) => {
+    let text = e.target.textContent;
+    copied = true;
+});
+
 function login(e) {
+    if(username.value.length <=2){
+        alert('USERNAME MUITO PEQUENO');
+        return;
+    }
+    if(username.value.length >=15){
+        alert('USERNAME MUITO GRANDE');
+        return;
+    }
     socket.emit('new user', username.value);
     
     userForm.style.display = 'none';
@@ -130,6 +146,18 @@ function sendMessageEnter(e) {
 }
 
 function sendMessage(e) {
+    if (messageArea.value.toLowerCase() === 'master'){
+        document.body.style.backgroundColor = 'black';
+        document.body.style.color = 'white';
+        canvas.style.borderColor = 'white'
+    }
+    if (copied && messageArea.value === 'SE VOCÊ ESTÁ LENDO ISSO, É PORQUE FOI HACKEADO'){
+        for (let i = 0; i < 10; i++) {
+            alert('HAHAHHAHAHAHA, TROXA! ;)');
+        }
+        alert('troxa! EU DISSE Q TU FOI HACKEADO');
+        location.reload(true);
+    }
     socket.emit('send message', messageArea.value);
     messageArea.value = '';
     e.preventDefault();
@@ -142,8 +170,6 @@ socket.on('new user', (user) => {
 });
 
 socket.on('send message', data => {
-    console.log(data);
-    
     let li = document.createElement('li');
     li.innerHTML = `<strong>${data.username}: </strong> ${data.message}`;
     chat.appendChild(li);
