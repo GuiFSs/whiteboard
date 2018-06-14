@@ -64,3 +64,73 @@ function onMouseDown(e) {
     current.y = e.clientY;
 }
 
+
+
+
+
+
+
+const btnLogin = document.getElementById('btnLogin'),
+      username = document.getElementById('username'),
+      mainDiv = document.getElementById('mainDiv'),
+      userForm = document.getElementById('userForm'),
+      totUsers = document.getElementById('totUsers'),
+      chatDiv = document.getElementById('chatDiv'),
+      chat = document.getElementById('chat'),
+      btnSendMsg = document.getElementById('btnSendMsg'),
+      messageArea = document.getElementById('message'),
+      joke = document.getElementById('joke');
+
+btnLogin.addEventListener('click', login);
+btnSendMsg.addEventListener('click', sendMessage);
+messageArea.addEventListener('keypress', sendMessageEnter);
+
+function login(e) {
+    socket.emit('new user', username.value);
+    
+    userForm.style.display = 'none';
+    joke.style.display = 'none';
+    mainDiv.style.display = 'block';
+    chatDiv.style.display = 'block';
+    e.preventDefault();
+}
+
+function sendMessageEnter(e) {
+
+    if (e.keyCode === 13){
+        sendMessage(e);
+    }
+}
+
+function sendMessage(e) {
+    socket.emit('send message', messageArea.value);
+    messageArea.value = '';
+    e.preventDefault();
+}
+
+socket.on('new user', (user) => {
+    let li = document.createElement('li');
+    li.innerHTML = `<small><strong>${user}</strong> connected to the chat. Say hello to him</small>`;
+    chat.appendChild(li);
+});
+
+socket.on('send message', data => {
+    console.log(data);
+    
+    let li = document.createElement('li');
+    li.innerHTML = `<strong>${data.username}: </strong> ${data.message}`;
+    chat.appendChild(li);
+});
+
+socket.on('all connections', data => {
+    totUsers.textContent = data;
+});
+
+socket.on('disconnected', username => {
+    if(!username) return;
+    let li = document.createElement('li');
+    li.innerHTML = `<small><strong>${username}</strong> disconnected of the chat.</small>`;
+    chat.appendChild(li);
+});
+
+console.log('SE VOCÊ ESTÁ LENDO ISSO, É PORQUE FOI HACKEADO');
