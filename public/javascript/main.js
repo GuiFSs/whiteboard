@@ -174,13 +174,17 @@ function sendMessage(e) {
     }
 
     if(message.toLowerCase() === ':clear:'){
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        return
+        socket.emit('clear');
+        return;
     }
-    
+
     socket.emit('send message', message);
     e.preventDefault();
 }
+
+socket.on('clear', () => {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+});
 
 socket.on('new user', (user) => {
     let li = document.createElement('li');

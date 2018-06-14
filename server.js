@@ -37,12 +37,14 @@ io.sockets.on('connection', (socket) => {
         socket.broadcast.emit('typing', data);
     });
 
+    socket.on('clear', () => {
+        io.sockets.emit('clear');
+    });
 
     socket.on('send message', data => {
         io.sockets.emit('send message', {message: data, username: socket.username});
         socket.broadcast.emit('typing stoped');
     });
-
 
     function updateAllConnections() {
         io.sockets.emit('all connections', connections.length); 
