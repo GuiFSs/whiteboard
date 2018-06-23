@@ -106,33 +106,25 @@ const btnLogin = document.getElementById('btnLogin'),
       chatDiv = document.getElementById('chatDiv'),
       chat = document.getElementById('chat'),
       btnSendMsg = document.getElementById('btnSendMsg'),
-      messageArea = document.getElementById('message'),
-      joke = document.getElementById('joke');
+      messageArea = document.getElementById('message');
 
 btnLogin.addEventListener('click', login);
 btnSendMsg.addEventListener('click', sendMessage);
 messageArea.addEventListener('keypress', keyPress);
 
-// jokes
-let copied = false;
-joke.addEventListener('copy', (e) => {
-    let text = e.target.textContent;
-    copied = true;
-});
 
 function login(e) {
     if(username.value.length <=2){
-        alert('USERNAME MUITO PEQUENO');
+        alert('Username too small');
         return;
     }
     if(username.value.length >=15){
-        alert('USERNAME MUITO GRANDE');
+        alert('Username too big');
         return;
     }
     socket.emit('new user', username.value);
     
     userForm.style.display = 'none';
-    joke.style.display = 'none';
     mainDiv.style.display = 'block';
     chatDiv.style.display = 'block';
     e.preventDefault();
@@ -164,13 +156,6 @@ function sendMessage(e) {
         document.body.style.color = 'white';
         canvas.style.borderColor = 'white';
         return;
-    }
-    if (copied && message === 'SE VOCÊ ESTÁ LENDO ISSO, É PORQUE FOI HACKEADO'){
-        for (let i = 0; i < 10; i++) {
-            alert('HAHAHHAHAHAHA, TROXA! ;)');
-        }
-        alert('troxa! EU DISSE Q TU FOI HACKEADO');
-        location.reload(true);
     }
 
     if(message.toLowerCase() === ':clear:'){
